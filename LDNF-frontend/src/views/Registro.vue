@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="page page-center">
+  <div class="page page-center">
     <div class="container container-tight py-4">
       <div class="text-center mb-4">
         <a href="." class="navbar-brand navbar-brand-autodark">
@@ -52,61 +52,76 @@
         Já possui uma conta? <router-link to="/login" tabindex="-1">Entrar</router-link>
       </div>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <script setup lang="ts">
-// import { ref, reactive } from 'vue'
-// import axios from 'axios'
-// import { useRouter } from 'vue-router'
+import { ref, reactive } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
 
-// const router = useRouter()
-// const isLoading = ref(false)
-// const errors = ref<string[]>([])
+const router = useRouter()
+const isLoading = ref(false)
+const errors = ref<string[]>([])
 
-// const form = reactive({
-//   nome: '',
-//   email: '',
-//   senha: '',
-//   confirmar_senha: ''
-// })
+const form = reactive({
+  nome: '',
+  email: '',
+  senha: '',
+  confirmar_senha: ''
+})
 
-// const submitForm = async () => {
-//   errors.value = []
+const submitForm = async () => {
+  errors.value = []
   
-//   if (form.nome == ''){
-//     errors.value.push("Nome Faltando")
-//   }
-//   if (form.email == ""){
-//     errors.value.push("Email Faltante")
-//   }
-//   if (form.senha !== form.confirmar_senha) {
-//     errors.value.push("As senhas não coincidem.")
-//     return
-//   }
+  if (form.nome == ''){
+    errors.value.push("Nome Faltando")
+  }
+  if (form.email == ""){
+    errors.value.push("Email Faltante")
+  }
+  if (form.senha !== form.confirmar_senha) {
+    errors.value.push("As senhas não coincidem.")
+    return
+  }
 
-//   if(errors.value.length === 0){
-//     axios
-//         .post('/api/registrar/', this.form)
-//         .then(response => {
-//             if(response.data.message === 'success'){
-//               this.toastStore.showToast(5000, 'The user is registered')
-//               this.form.email = ''
-//               this.form.nome = ''
-//             } else {
-//               this.toastStore.showToast(5000, 'Something went wrong')
-//             }
-//         })
-//   }
+  if(errors.value.length === 0){
+    isLoading.value = true
+    try{
+      const response = await axios.post('/api/registrar/', form)
+      if (response.data.success || response.data.message === 'success') {
+          //toastStore.showToast(5000, 'O usuário foi registrado com sucesso!', 'success')
+          console.log("sucesso")
+          // Limpa o formulário
+          form.email = ''
+          form.nome = ''
+          form.senha = ''
+          form.confirmar_senha = ''
+
+          // Redireciona para o login após 2 segundos
+          // setTimeout(() => router.push('/login'), 2000)
+        }
+      } catch (error: any) {
+        console.error(error)
+        //toastStore.showToast(5000, 'Algo deu errado no servidor', 'error')
+        
+        // Se o Django Ninja retornar um erro específico (ex: e-mail já existe)
+        if (error.response?.data?.error) {
+          errors.value.push(error.response.data.error)
+        }
+      } finally {
+        isLoading.value = false // Desativa o loading independente de dar certo ou errado
+      }
+    }
+  }
 </script>
 
 <style scoped>
-/* O Tabler já cuida da maioria dos estilos, mas se precisar centralizar:
 .page-center {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #f4f6fa;
-} */
+}
 </style>
