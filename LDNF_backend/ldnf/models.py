@@ -23,7 +23,7 @@ class GerenciadorDeUsuarios(UserManager):
     def criar_superusuario(self, nome = None, email = None, senha = None, **campos_extras):
         campos_extras.setdefault('is_staff', True)
         campos_extras.setdefault('is_superuser', True)
-
+        return self._criar_usuario(nome, email, senha, **campos_extras)
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)

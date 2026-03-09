@@ -10,7 +10,6 @@
       <form class="card card-md" @submit.prevent="submitForm" autocomplete="off">
         <div class="card-body">
           <h2 class="card-title text-center mb-4">Criar nova conta</h2>
-          
           <div class="mb-3">
             <label class="form-label">Nome Completo</label>
             <input type="text" v-model="form.nome" class="form-control" placeholder="Digite seu nome" required>
@@ -23,9 +22,7 @@
 
           <div class="mb-3">
             <label class="form-label">Senha</label>
-            <div class="input-group input-group-flat">
-              <input type="password" v-model="form.senha" class="form-control" placeholder="Senha forte" autocomplete="off" required>
-            </div>
+            <input type="password" v-model="form.senha" class="form-control" placeholder="Senha forte" required>
           </div>
 
           <div class="mb-3">
@@ -41,7 +38,7 @@
 
           <div class="form-footer">
             <button type="submit" class="btn btn-primary w-100" :disabled="isLoading">
-              <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              <span v-if="isLoading" class="spinner-border spinner-border-sm me-2"></span>
               {{ isLoading ? 'Processando...' : 'Criar minha conta' }}
             </button>
           </div>
@@ -49,7 +46,7 @@
       </form>
 
       <div class="text-center text-secondary mt-3">
-        Já possui uma conta? <router-link to="/login" tabindex="-1">Entrar</router-link>
+        Já possui uma conta? <router-link to="/login">Entrar</router-link>
       </div>
     </div>
   </div>
@@ -74,54 +71,45 @@ const form = reactive({
 const submitForm = async () => {
   errors.value = []
   
-  if (form.nome == ''){
-    errors.value.push("Nome Faltando")
-  }
-  if (form.email == ""){
-    errors.value.push("Email Faltante")
-  }
+  // Validação simples de senha
   if (form.senha !== form.confirmar_senha) {
     errors.value.push("As senhas não coincidem.")
     return
   }
 
-  if(errors.value.length === 0){
-    isLoading.value = true
-    try{
-      const response = await axios.post('/api/registrar/', form)
-      if (response.data.success || response.data.message === 'success') {
-          //toastStore.showToast(5000, 'O usuário foi registrado com sucesso!', 'success')
-          console.log("sucesso")
-          // Limpa o formulário
-          form.email = ''
-          form.nome = ''
-          form.senha = ''
-          form.confirmar_senha = ''
+  isLoading.value = true
+  
+  try {
+    const response = await axios.post(`/api/registrar/`, {
+      nome: form.nome,
+      email: form.email,
+      senha: form.senha
+    })
 
-          // Redireciona para o login após 2 segundos
-          // setTimeout(() => router.push('/login'), 2000)
-        }
-      } catch (error: any) {
-        console.error(error)
-        //toastStore.showToast(5000, 'Algo deu errado no servidor', 'error')
-        
-        // Se o Django Ninja retornar um erro específico (ex: e-mail já existe)
-        if (error.response?.data?.error) {
-          errors.value.push(error.response.data.error)
-        }
-      } finally {
-        isLoading.value = false // Desativa o loading independente de dar certo ou errado
-      }
+    // Se o Django retornar success: true ou status 200/201
+    if (response.data.success || response.status === 200 || response.status === 201) {
+      console.log("Usuário registrado com sucesso!")
+      
+      // Limpar formulário
+      Object.assign(form, { nome: '', email: '', senha: '', confirmar_senha: '' })
+
+      // Redirecionar (opcional)
+      router.push('/Login')
     }
+  } catch (error: any) {
+    console.error("Erro na requisição:", error)
+    
+    // Captura a mensagem de erro que configuramos no Python: return 400, {"error": "..."}
+    if (error.response?.data?.error) {
+      errors.value.push(error.response.data.error)
+    } else if (error.response?.data?.detail) {
+      // Caso o Django Ninja envie um erro de validação automática
+      errors.value.push("Dados inválidos. Verifique os campos.")
+    } else {
+      errors.value.push("Algo deu errado no servidor. Tente novamente mais tarde.")
+    }
+  } finally {
+    isLoading.value = false
   }
-</script>
-
-<style scoped>
-.page-center {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f4f6fa;
 }
-</style>
+</script>
