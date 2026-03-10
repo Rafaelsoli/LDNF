@@ -1,7 +1,67 @@
 <template>
-    home?
+<div class="page">
+  <header class="navbar navbar-expand-sm navbar-light d-print-none">
+    <div class="container-xl">
+      <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+        <a href="#">
+          <img
+            width="110"
+            height="32"
+            alt="Liga del nuevo fútbol"
+            class="navbar-brand-image"
+          />
+        </a>
+      </h1>
+      <div class="navbar-nav flex-row order-md-last">
+        <div class="nav-item">
+          <a href="/login" class="nav-link d-flex lh-1 text-reset p-0">
+            <span
+              class="avatar avatar-sm"
+              style="background-image: url(/static/avatars/002m.jpg)"
+            ></span>
+            <div class="d-none d-xl-block ps-2">
+              <div>{{store.user.nome}}</div>
+              <div class="mt-1 small text-secondary">{{store.user.email}}</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="page-wrapper">
+    <div class="page-body">
+      <div class="container-xl">
+        <div class="row row-deck row-cards">
+          <div class="col-4">
+            <div class="card">
+              <div class="card-body" style="height: 10rem"></div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card">
+              <div class="card-body" style="height: 10rem"></div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card">
+              <div class="card-body" style="height: 10rem"></div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body" style="height: 10rem"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
 
-<script lang="ts">
-    
+<script setup lang="ts">
+        import axios from 'axios'
+        import { useUserStore } from '@/stores/user';
+
+        const store = useUserStore()
 </script>

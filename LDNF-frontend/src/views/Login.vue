@@ -73,10 +73,11 @@ const submitForm = async () => {
             console.log("Usuário Logado com sucesso!")
             userStore.setToken(response.data.access)
             axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
-            // 3. Salva no LocalStorage para não perder ao dar F5 (opcional se o store já faz)
             localStorage.setItem('token', response.data.access)
-            // 4. Redireciona
-            
+            //Redirecionamento
+            const RespostaUsuario = await axios.get('/api/eu/')
+            userStore.setUserInfo(RespostaUsuario.data)
+            console.log("user: ", RespostaUsuario.data)
             router.push('/Home')
         }
     } catch (error: any) {
