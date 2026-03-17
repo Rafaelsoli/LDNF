@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'ninja_jwt',
     'corsheaders',
     'ninja_extra',
+    'core',
 ]
 
 MIDDLEWARE = [
