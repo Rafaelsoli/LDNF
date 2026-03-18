@@ -43,16 +43,3 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-
-class Time(models.Model):
-    nome = models.CharField(max_length = 50)
-    localidade = models.CharField(max_length = 50)
-    descricao = models.CharField(max_length = 1500)
-    #jogadores = models.ForeignKey()
-    escudo = models.URLField(blank = True)
-
-class Jogador(models.Model):
-    nome = models.CharField(max_length = 30)
-    sobrenome = models.CharField(max_length= 30)
-    numero_camisa = models.IntegerField()
-

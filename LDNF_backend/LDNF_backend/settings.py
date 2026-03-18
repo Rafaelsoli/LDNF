@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'ninja_extra',
     'core',
+    'teams',
 ]
 
 MIDDLEWARE = [
