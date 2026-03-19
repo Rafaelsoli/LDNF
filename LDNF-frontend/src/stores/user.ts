@@ -23,7 +23,7 @@ export const useUserStore = defineStore(`user`, {
                 this.user.nome = localStorage.getItem('user.nome')
                 this.user.email = localStorage.getItem('user.email')
                 this.user.isAuthenticated = true
-
+                
                 this.refreshToken()
 
                 console.log('User inicializado do localStorage')
@@ -52,14 +52,14 @@ export const useUserStore = defineStore(`user`, {
             this.user.email = user.email
             //! força a ignorar o risco de null
             localStorage.setItem('user.id', this.user.id!)
-            localStorage.setItem('user.name', this.user.nome!)
+            localStorage.setItem('user.nome', this.user.nome!)
             localStorage.setItem('user.email', this.user.email!)
 
             console.log('user', this.user)
         },
 
         refreshToken(){
-            axios.post('/api/refresh/', {
+            axios.post('/api/token/refresh/', {
                 refresh: this.user.refresh
             })
                 .then((response) =>{

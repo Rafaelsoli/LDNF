@@ -8,9 +8,11 @@ class TimeSchema(Schema):
     vitorias: int
     empate: int
     derrotas: int
+    pontos: int
 
 def TimeInfo(api):
     @api.get("/time/", response = List[TimeSchema])
     def info(request):
-        teams = Time.objects.all()
+        teams = list(Time.objects.all())
+        teams.sort(key=lambda t: (t.pontos, t.vitorias), reverse=True)
         return teams 

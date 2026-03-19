@@ -12,3 +12,7 @@ class Time(models.Model):
     vitorias = models.IntegerField()
     derrotas = models.IntegerField()
     empate = models.IntegerField()
+    
+    @property
+    def pontos(self):
+        return (self.vitorias * 3) + (self.empate * 1)
