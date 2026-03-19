@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Time
+from .models import Placar
 # Register your models here.
 @admin.register(Time)
 class TimeAdmin(admin.ModelAdmin):
@@ -12,7 +13,18 @@ class TimeAdmin(admin.ModelAdmin):
         ('Imagem', {
             'fields': ('escudo',)
         }),
-        ('Jogos', {
-            'fields': ('jogos','vitorias','derrotas','empate',)
+    )
+
+@admin.register(Placar)
+class PlacarAdmin(admin.ModelAdmin):
+    list_display = ('time', 'vitorias', 'id')
+
+    fieldsets = (
+        ('Time', {
+            'fields': ('time',)
+        }),
+        ('Placar', {
+            'fields': ('jogos','vitorias','derrotas','empate','GM','GS',)
         }),
     )
+    

@@ -3,32 +3,45 @@ import { ref, reactive, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { useTheme } from '@/components/useTheme'
 
-interface TimeInfo{
+
+interface PlacarInfo{
+  id: string
   nome: string
   jogos: number
   pontos: number
   vitorias: number
   empate: number
   derrotas: number
+  GM: number
+  GS: number 
+  DG: number 
+  PCT: number 
 }
+const placar = ref<PlacarInfo[]>([])
+
+const { theme, toggleTheme } = useTheme()
 
 const sobre = ref("")
+const router = useRouter()
 const nome = ref("")
 const email = ref("")
-const time = ref<TimeInfo[]>([])
-const userStore = useUserStore()
+
 onMounted(async () =>{
     try {
       // chamadas da api
       const response = await axios.get(`/api/sobre/`,)
       const info = await axios.get(`/api/eu/`)
-      const melhor = await axios.get(`/api/time/`)
+      const tabela = await axios.get(`/api/placar/`)
+      
       // atribuição de valor
       sobre.value = response.data.titulo
+      
       nome.value = info.data.nome
       email.value = info.data.email
-      time.value = melhor.data
+
+      placar.value = tabela.data
     } catch (error) {
       console.error("Erro ao buscar dados:", error)
   }
@@ -59,6 +72,10 @@ onMounted(async () =>{
 
       <!-- USER -->
       <div class="navbar-nav flex-row order-md-last ms-auto">
+        <button @click="toggleTheme" class="btn me-2">
+          <span v-if="theme === 'light'">Branco</span>
+          <span v-else>Escuro</span>
+        </button>
         <div class="nav-item dropdown">
           <a href="#" class="nav-link d-flex align-items-center"
             data-bs-toggle="dropdown">
@@ -91,9 +108,9 @@ onMounted(async () =>{
 
       <!-- HEADER -->
       <div class="page-header mb-4">
-        <h2 class="page-title">Liga LDNF</h2>
+        <h2 class="page-title">LDNF</h2>  
         <div class="text-secondary">
-          Classificação e informações da liga
+          <i>The league of the impossible</i>
         </div>
       </div>
 
@@ -132,32 +149,40 @@ onMounted(async () =>{
               <tr>
                 <th>#</th>
                 <th>Time</th>
+                <th>Pts</th>
                 <th>J</th>
                 <th>V</th>
                 <th>E</th>
                 <th>D</th>
-                <th class="text-end">Pts</th>
+                <th>GM</th>
+                <th>GS</th>
+                <th>DG</th>
+                <th class="text-end">PCT</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr v-for="(item, index) in time" :key="index">
+              <tr v-for="(item, index) in placar" :key="index">
                 
                 <td class="fw-bold text-primary">
                   {{ index + 1 }}º
                 </td>
 
-                <td class="fw-semibold">
-                  {{ item.nome }}
+                <td class="fw-semibold" v-on:click="">
+                  <router-link :to="`/time/${item.id}`">{{ item.nome }}</router-link>
                 </td>
 
+                <td>{{ item.pontos }}</td>
                 <td>{{ item.jogos }}</td>
                 <td class="text-success">{{ item.vitorias }}</td>
                 <td class="text-warning">{{ item.empate }}</td>
                 <td class="text-danger">{{ item.derrotas }}</td>
+                <td>{{ item.GM }}</td>
+                <td>{{ item.GS }}</td>
+                <td>{{ item.DG }}</td>
 
                 <td class="text-end fw-bold">
-                  {{ item.pontos}}
+                  {{ item.PCT}}
                 </td>
 
               </tr>
