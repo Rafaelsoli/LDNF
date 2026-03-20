@@ -7,10 +7,11 @@ import { useRoute } from 'vue-router'
 const { theme, toggleTheme } = useTheme()
 const route = useRoute()
 
-const nome = ref("")
-const email = ref("")
+// Dados do usuário (mockados ou vindo de outra store)
+const nomeUser = ref("Usuário") 
+const emailUser = ref("usuario@ldnf.com")
 
-interface TimeInfo{
+interface TimeInfo {
   nome: string
   descricao: string
   localidade: string 
@@ -18,10 +19,15 @@ interface TimeInfo{
 
 const time = ref<TimeInfo>()
 
-const timeId = route.params.id 
-
-const resposta = await axios.get(`/api/time/${timeId}`) 
-time.value = resposta.data
+onMounted(async () => {
+  const timeId = route.params.id
+  try {
+    const resposta = await axios.get(`/api/time/${timeId}`)
+    time.value = resposta.data
+  } catch (e) {
+    console.error("Erro ao buscar time!", e)
+  }
+})
 </script>
 
 
@@ -30,7 +36,7 @@ time.value = resposta.data
   <header class="navbar navbar-expand-md d-print-none shadow-sm">
     <div class="container-xl">
       <a href="#" class="navbar-brand fw-bold text-primary me-3">
-        {{time?.nome}}
+        LDNF
       </a>
 
       <ul class="navbar-nav">
@@ -62,8 +68,8 @@ time.value = resposta.data
             </span>
 
             <div class="d-none d-xl-block">
-              <div class="fw-semibold">{{ nome }}</div>
-              <div class="small text-secondary">{{ email }}</div>
+              <div class="fw-semibold">{{ nomeUser }}</div>
+              <div class="small text-secondary">{{ emailUser }}</div>
             </div>
           </a>
 
@@ -82,7 +88,7 @@ time.value = resposta.data
 
       <!-- HEADER -->
       <div class="page-header mb-4">
-        <h2 class="page-title">LDNF</h2>  
+        <h2 class="page-title">{{time.nome}}</h2>  
         <div class="text-secondary">
           <i>The league of the impossible</i>
         </div>

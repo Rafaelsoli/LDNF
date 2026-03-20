@@ -40,7 +40,7 @@ onMounted(async () =>{
       
       nome.value = info.data.nome
       email.value = info.data.email
-
+      
       placar.value = tabela.data
     } catch (error) {
       console.error("Erro ao buscar dados:", error)
