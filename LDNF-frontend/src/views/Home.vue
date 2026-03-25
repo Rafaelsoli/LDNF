@@ -52,8 +52,8 @@ onMounted(async () =>{
   <header class="navbar navbar-expand-md d-print-none shadow-sm">
     <div class="container-xl">
       
-      <a href="#" class="navbar-brand fw-bold text-primary me-3">
-        LDNF
+      <a href="/Home" class="navbar-brand fw-bold text-primary me-3">
+        🏆 LDNF
       </a>
 
       <ul class="navbar-nav">
@@ -72,11 +72,10 @@ onMounted(async () =>{
 
       <!-- USER -->
       <div class="navbar-nav flex-row order-md-last ms-auto">
-        <button @click="toggleTheme" class="btn me-2">
-          <span v-if="theme === 'light'">Branco</span>
-          <span v-else>Escuro</span>
+        <button @click="toggleTheme" class="btn me-1">
+          <span v-if="theme === 'light'"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-bulb"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" /><path d="M12 2a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z" /><path d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z" /><path d="M4.893 4.893a1 1 0 0 1 1.32 -.083l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 0 -1.414z" /><path d="M17.693 4.893a1 1 0 0 1 1.497 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7z" /><path d="M14 18a1 1 0 0 1 1 1a3 3 0 0 1 -6 0a1 1 0 0 1 .883 -.993l.117 -.007h4z" /><path d="M12 6a6 6 0 0 1 3.6 10.8a1 1 0 0 1 -.471 .192l-.129 .008h-6a1 1 0 0 1 -.6 -.2a6 6 0 0 1 3.6 -10.8z" /></svg></span>
+          <span v-else><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-bulb"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" /><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" /><path d="M9.7 17l4.6 0" /></svg></span>
         </button>
-        <div class="nav-item dropdown">
           <a href="#" class="nav-link d-flex align-items-center"
             data-bs-toggle="dropdown">
 
@@ -89,14 +88,6 @@ onMounted(async () =>{
               <div class="small text-secondary">{{ email }}</div>
             </div>
           </a>
-
-          <div class="dropdown-menu dropdown-menu-end">
-            <a class="dropdown-item">Profile</a>
-            <a class="dropdown-item">Settings</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item text-danger">Logout</a>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -118,23 +109,12 @@ onMounted(async () =>{
       <div class="card mb-4 shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
           <h3 class="card-title mb-0">Sobre a LDNF</h3>
-
-          <button 
-            class="btn btn-outline-primary btn-sm"
-            data-bs-toggle="collapse"
-            data-bs-target="#sobreCollapse"
-          >
-            Ver mais
-          </button>
         </div>
-
-        <div id="sobreCollapse" class="collapse show">
           <div class="card-body">
             <p class="text-secondary lh-lg fonte-mono">
               {{ sobre }}
             </p>
           </div>
-        </div>
       </div>
 
       <!-- TABELA -->

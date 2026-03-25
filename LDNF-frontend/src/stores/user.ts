@@ -16,6 +16,8 @@ export const useUserStore = defineStore(`user`, {
 
     actions: {
         initStore() {
+            const access = localStorage.getItem('user.access');
+            const refresh = localStorage.getItem('user.refresh');
             if (localStorage.getItem('user.access')) {
                 this.user.access = localStorage.getItem('user.access')
                 this.user.refresh = localStorage.getItem('user.refresh')
@@ -24,12 +26,14 @@ export const useUserStore = defineStore(`user`, {
                 this.user.email = localStorage.getItem('user.email')
                 this.user.isAuthenticated = true
                 
-                this.refreshToken()
+                axios.defaults.headers.common["Authorization"] = "Bearer " + access;
+                this.refreshToken();
 
-                console.log('User inicializado do localStorage')
+                console.log('User inicializado e autenticado via LocalStorage');
             }
         },
         setToken(data: any) {
+            console.log('SetToken', data)
             this.user.access = data.access
             this.user.refresh = data.refresh
             this.user.isAuthenticated = true

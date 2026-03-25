@@ -70,8 +70,8 @@ const submitForm = async () => {
         })
 
         if (response.status === 200) {
-            console.log("Usuário Logado com sucesso!")
-            userStore.setToken(response.data.access)
+            console.log("Resposta do login: ", response.data)
+            userStore.setToken(response.data)
             axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
             localStorage.setItem('token', response.data.access)
             //Redirecionamento

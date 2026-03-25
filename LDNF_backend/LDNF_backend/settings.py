@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'ninja_extra',
     'core',
     'teams',
+    'players',
 ]
 
 MIDDLEWARE = [

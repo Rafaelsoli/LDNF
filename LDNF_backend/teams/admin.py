@@ -13,6 +13,9 @@ class TimeAdmin(admin.ModelAdmin):
         ('Imagem', {
             'fields': ('escudo',)
         }),
+        ('Jogadores', {
+            'fields': ('jogadores',)
+        }),
     )
 
 @admin.register(Placar)

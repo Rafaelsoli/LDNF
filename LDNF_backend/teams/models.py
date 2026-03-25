@@ -10,6 +10,7 @@ class Time(models.Model):
     localidade = models.CharField(max_length = 50)
     descricao = models.TextField()
     escudo = models.URLField(blank = True)
+    jogadores = models.ManyToManyField('players.Jogador', related_name='time', null=True, blank=True)
 
     def __str__(self):
         return self.nome
