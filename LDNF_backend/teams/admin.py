@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Time
 from .models import Placar
+from .models import Jogos
 # Register your models here.
 @admin.register(Time)
 class TimeAdmin(admin.ModelAdmin):
@@ -31,3 +32,18 @@ class PlacarAdmin(admin.ModelAdmin):
         }),
     )
     
+@admin.register(Jogos)
+class JogosAdmin(admin.ModelAdmin):
+    list_display = ('time_casa', 'time_visitante', 'data_jogo')
+
+    fieldsets = (
+        ('Times', {
+            'fields': ('time_casa', 'time_visitante')
+        }),
+        ('Gols', {
+            'fields': ('gols_casa', 'gols_visitante')
+        }),
+        ('Data', {
+            'fields': ('data_jogo',)
+        }),
+    )

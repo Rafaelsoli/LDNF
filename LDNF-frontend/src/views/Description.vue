@@ -12,7 +12,7 @@ const Usernome = ref("")
 const Useremail = ref("")
 const jogos = ref<any[]>([])
 const mostrarModal = ref(false)
-
+const combates = ref<any[]>([])
 interface Jogador {
   nome: string
   numero_camisa: number
@@ -44,16 +44,18 @@ const carregarDados = async () => {
   const timeId = route.params.id
   try {
     // Executa as chamadas em paralelo para ser mais rápido
-    const [resTime, resUser, resPlacar] = await Promise.all([
+    const [resTime, resUser, resPlacar, resCombates] = await Promise.all([
       axios.get(`/api/time/${timeId}`),
       axios.get(`/api/eu/`),
-      axios.get(`/api/placar/`)
+      axios.get(`/api/placar/`),
+      axios.get(`/api/jogos/${timeId}`)
     ])
     
     time.value = resTime.data
     Usernome.value = resUser.data.nome
     Useremail.value = resUser.data.email
     jogos.value = resPlacar.data
+    combates.value = resCombates.data
   } catch (e) {
     console.error("Erro ao carregar dados da página:", e)
   }
@@ -126,10 +128,6 @@ onMounted(carregarDados)
       <div v-if="time && placarDesteTime" class="mt-5">
         <div class="page-header mb-4 d-flex justify-content-between align-items-center">
           <h3 class="page-title">Placar atual do {{ time.nome }}</h3>
-          <button class="btn btn-primary" @click="mostrarModal = true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-2"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg>
-            Atualizar Placar
-          </button>
         </div>
 
         <div class="card shadow-sm">
@@ -157,6 +155,12 @@ onMounted(carregarDados)
             </div>
           </div>
         </div>
+        <div class="page-header mb-4 d-flex justify-content-between align-items-center pt-4">
+          <button class="btn btn-primary" @click="mostrarModal = true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-2"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg>
+            Atualizar Placar  
+          </button>
+        </div>
       </div>
 
       <div v-else-if="time && !placarDesteTime" class="alert alert-info">
@@ -172,4 +176,30 @@ onMounted(carregarDados)
     @fechar="mostrarModal = false"
     @atualizado="carregarDados"
   />
+
+<div v-for="combate in combates" :key="combate.id" class="col-md-6 col-lg-4 mb-3 container-xl">
+  <div class="card shadow-sm border-2" :class="{'border-success': combate.vencedor}">
+    <div class="card-body p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        
+        <div class="text-center" :class="{'fw-bold text-success': combate.vencedor?.id === combate.time_casa.id}">
+          {{ combate.time_casa.nome }}
+        </div>
+        
+        <div class="h4 mb-0 ">
+          {{ combate.gols_casa }} - {{ combate.gols_visitante }}
+        </div>
+
+        <div class="text-center" :class="{'fw-bold text-success': combate.vencedor?.id === combate.time_visitante.id}">
+          {{ combate.time_visitante.nome }}
+        </div>
+        
+      </div>
+      <div class="text-center mt-2 small text-secondary">
+        {{ new Date(combate.data_jogo).toLocaleDateString('pt-BR') }}
+      </div>
+    </div>
+  </div>
+</div>
+ 
 </template>

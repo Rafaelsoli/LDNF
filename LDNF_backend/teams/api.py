@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from teams.models import *
 from ninja import Schema, Field
 import uuid
 from django.shortcuts import get_object_or_404
-from typing import List
+from typing import List, Optional
 
 class PlacarSchema(Schema):
     id: uuid.UUID = Field(alias="time.id")
@@ -65,3 +67,41 @@ def PlacarUpdate(api):
         
         placar.save()
         return {"success": True}
+
+class TimeSimplesSchema(Schema):
+    id: uuid.UUID
+    nome: str
+
+class JogoInfoSchema(Schema):
+    id: uuid.UUID
+    time_casa: TimeSimplesSchema
+    time_visitante: TimeSimplesSchema
+    gols_casa: int
+    gols_visitante: int
+    data_jogo: datetime
+    vencedor: Optional[TimeSimplesSchema] = None
+    
+
+    class Config:
+        from_attributes = True
+
+def JogosInfo(api):
+    @api.get("/jogos/{time_id}", response=List[JogoInfoSchema])
+    def get_jogos(request, time_id: uuid.UUID):
+        return Jogos.objects.filter(
+        models.Q(time_casa_id=time_id) | models.Q(time_visitante_id=time_id)
+        ).select_related('time_casa', 'time_visitante')
+    
+class JogoCreateSchema(Schema):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    time_casa: uuid.UUID
+    time_visitante: uuid.UUID
+    gols_casa: int
+    gols_visitante: int
+    data_jogo: datetime
+
+def JogosCreate(api):
+    @api.post("/jogos/create")
+    def create_jogo(request, data: JogoCreateSchema):
+        jogo = Jogos.objects.create(**data.dict())
+        return {"success": True, "jogo_id": jogo.id}

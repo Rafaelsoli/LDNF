@@ -42,3 +42,24 @@ class Placar(models.Model):
     def PCT(self):
         total_possivel = self.jogos * 3
         return round(self.pontos / total_possivel, 3)
+    
+
+class Jogos(models.Model):
+    id = models.UUIDField(primary_key= True, default=uuid.uuid4, editable= False)
+    time_casa = models.ForeignKey(Time, on_delete=models.CASCADE, related_name='casa')
+    time_visitante = models.ForeignKey(Time, on_delete=models.CASCADE, related_name='visitante')
+    gols_casa = models.IntegerField()
+    gols_visitante = models.IntegerField()
+    data_jogo = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.time_casa.nome} vs {self.time_visitante.nome} - {self.data_jogo.strftime('%Y-%m-%d %H:%M')}"
+    
+    @property
+    def vencedor(self):
+        if self.gols_casa > self.gols_visitante:
+            return self.time_casa
+        elif self.gols_visitante > self.gols_casa:
+            return self.time_visitante
+        else:
+            return None
