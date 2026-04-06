@@ -94,8 +94,8 @@ def JogosInfo(api):
     
 class JogoCreateSchema(Schema):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    time_casa: uuid.UUID
-    time_visitante: uuid.UUID
+    time_casa_id: uuid.UUID = Field(alias="time_casa")
+    time_visitante_id: uuid.UUID = Field(alias="time_visitante")
     gols_casa: int
     gols_visitante: int
     data_jogo: datetime
@@ -105,3 +105,11 @@ def JogosCreate(api):
     def create_jogo(request, data: JogoCreateSchema):
         jogo = Jogos.objects.create(**data.dict())
         return {"success": True, "jogo_id": jogo.id}
+    
+    
+def JogosDelete(api):
+    @api.delete("/jogo/{jogo_id}") # Note que usei "/jogo/" no singular para diferenciar
+    def delete_jogo(request, jogo_id: uuid.UUID):
+        jogo = get_object_or_404(Jogos, id=jogo_id)
+        jogo.delete()
+        return {"success": True}

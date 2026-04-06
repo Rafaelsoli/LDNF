@@ -14,8 +14,8 @@ const form = reactive({ ...props.dadosAtuais })
 const salvar = async () => {
   try {
     await axios.post(`/api/placar/${props.timeId}/update`, form)
-    emit('atualizado') // Avisa o pai para recarregar a lista
-    emit('fechar')     // Fecha o modal
+    emit('atualizado') 
+    emit('fechar')     
   } catch (e) {
     alert("Erro ao atualizar placar")
   }

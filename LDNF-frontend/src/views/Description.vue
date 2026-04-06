@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useTheme } from '@/components/useTheme'
 import { useRoute } from 'vue-router'
 import PlacarForm from '@/components/PlacarForm.vue' 
+import CombateForm from '@/components/CombateForm.vue'
 
 const { theme, toggleTheme } = useTheme()
 const route = useRoute()
@@ -12,7 +13,9 @@ const Usernome = ref("")
 const Useremail = ref("")
 const jogos = ref<any[]>([])
 const mostrarModal = ref(false)
+const mostrarModalCombate = ref(false)
 const combates = ref<any[]>([])
+
 interface Jogador {
   nome: string
   numero_camisa: number
@@ -33,7 +36,6 @@ const placarDesteTime = computed(() => {
   if (!jogos.value.length) return null
   
   return jogos.value.find((item: any) => {
-    // No seu log, o UUID do time está vindo direto no campo 'id'
     const idNoPlacar = item.id 
     
     return String(idNoPlacar) === String(idDaUrl)
@@ -43,7 +45,6 @@ const placarDesteTime = computed(() => {
 const carregarDados = async () => {
   const timeId = route.params.id
   try {
-    // Executa as chamadas em paralelo para ser mais rápido
     const [resTime, resUser, resPlacar, resCombates] = await Promise.all([
       axios.get(`/api/time/${timeId}`),
       axios.get(`/api/eu/`),
@@ -62,6 +63,18 @@ const carregarDados = async () => {
 }
 
 onMounted(carregarDados)
+
+const excluirJogo = async (jogoId: string) => {
+  if (!confirm("Tem certeza que deseja excluir este jogo?")) return
+
+  try {
+    await axios.delete(`/api/jogo/${jogoId}`)
+    await carregarDados()
+  } catch (e) {
+    console.error("Erro ao excluir jogo:", e)
+    alert("Não foi possível excluir o jogo.")
+  }
+} 
 </script>
 
 <template>
@@ -97,6 +110,7 @@ onMounted(carregarDados)
     <div class="container-xl">
       <div v-if="time">
         <div class="page-header mb-4">
+          <img v-if="time.escudo" :src="time.escudo" class="me-3" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #dee2e6;">
           <h2 class="page-title">{{ time.nome }}</h2>
           <div class="text-secondary"><i>{{ time.localidade }}</i></div>
         </div>
@@ -127,7 +141,11 @@ onMounted(carregarDados)
 
       <div v-if="time && placarDesteTime" class="mt-5">
         <div class="page-header mb-4 d-flex justify-content-between align-items-center">
-          <h3 class="page-title">Placar atual do {{ time.nome }}</h3>
+          <h3 class="page-title p-3">Placar atual do {{ time.nome }}</h3>
+          <button class="btn btn-primary" @click="mostrarModal = true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-2"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg>
+            Atualizar Placar  
+          </button>
         </div>
 
         <div class="card shadow-sm">
@@ -155,51 +173,73 @@ onMounted(carregarDados)
             </div>
           </div>
         </div>
-        <div class="page-header mb-4 d-flex justify-content-between align-items-center pt-4">
-          <button class="btn btn-primary" @click="mostrarModal = true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-2"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg>
-            Atualizar Placar  
-          </button>
-        </div>
       </div>
-
       <div v-else-if="time && !placarDesteTime" class="alert alert-info">
         Nenhum dado de placar encontrado para este time.
       </div>
     </div>
   </div>
 
-  <PlacarForm 
-    v-if="mostrarModal" 
-    :timeId="route.params.id" 
+  <PlacarForm
+    v-if="mostrarModal"
+    :timeId = "String(route.params.id)"
     :dadosAtuais="placarDesteTime"
     @fechar="mostrarModal = false"
     @atualizado="carregarDados"
   />
 
-<div v-for="combate in combates" :key="combate.id" class="col-md-6 col-lg-4 mb-3 container-xl">
-  <div class="card shadow-sm border-2" :class="{'border-success': combate.vencedor}">
-    <div class="card-body p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        
-        <div class="text-center" :class="{'fw-bold text-success': combate.vencedor?.id === combate.time_casa.id}">
-          {{ combate.time_casa.nome }}
+<div v-if="time" class="container-xl mt-5">
+  <div class="page-header mb-4 d-flex justify-content-between align-items-center">
+    <h3 class="page-title p-3">Jogos do {{ time.nome }}</h3>
+    <button class="btn btn-outline-primary" @click="mostrarModalCombate = true">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+      Novo Jogo
+    </button>
+  </div>
+  
+    <div v-for="combate in combates" :key="combate.data_jogo" class="col-md-6 col-lg-4 mb-3 container-xl ">
+      <div 
+        class="card shadow-sm border-2 h-100" 
+        :class="{
+          'border-success': (String(combate.time_casa.id) === String(route.params.id) && combate.gols_casa > combate.gols_visitante) || 
+                            (String(combate.time_visitante.id) === String(route.params.id) && combate.gols_visitante > combate.gols_casa),
+          'border-danger': (String(combate.time_casa.id) === String(route.params.id) && combate.gols_casa < combate.gols_visitante) || 
+                           (String(combate.time_visitante.id) === String(route.params.id) && combate.gols_visitante < combate.gols_casa),
+          'border-warning': combate.gols_casa === combate.gols_visitante
+        }"
+      >
+        <button 
+          @click="excluirJogo(combate.id)" 
+          class="btn-close position-absolute top-0 end-0 m-2" 
+          aria-label="Excluir jogo"
+          style="font-size: 0.7rem; z-index: 10;"
+        ></button>
+        <div class="card-body p-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="text-center" :class="{'fw-bold': combate.gols_casa > combate.gols_visitante}">
+              {{ combate.time_casa.nome }}
+            </div>
+            <div class="h4 mb-0">
+              {{ combate.gols_casa }} - {{ combate.gols_visitante }}
+            </div>
+            <div class="text-center" :class="{'fw-bold': combate.gols_visitante > combate.gols_casa}">
+              {{ combate.time_visitante.nome }}
+            </div>
+          </div>
+          <div class="text-center mt-2 small text-secondary">
+            {{ new Date(combate.data_jogo).toLocaleDateString('pt-BR') }}
+          </div>
         </div>
-        
-        <div class="h4 mb-0 ">
-          {{ combate.gols_casa }} - {{ combate.gols_visitante }}
-        </div>
-
-        <div class="text-center" :class="{'fw-bold text-success': combate.vencedor?.id === combate.time_visitante.id}">
-          {{ combate.time_visitante.nome }}
-        </div>
-        
-      </div>
-      <div class="text-center mt-2 small text-secondary">
-        {{ new Date(combate.data_jogo).toLocaleDateString('pt-BR') }}
       </div>
     </div>
-  </div>
 </div>
+
+<CombateForm 
+  v-if="mostrarModalCombate" 
+  :timeIdDaPagina="String(route.params.id)" 
+  @fechar="mostrarModalCombate = false"
+  @atualizado="carregarDados" 
+/>
  
 </template>
+ 
