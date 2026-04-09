@@ -16,7 +16,7 @@ const form = reactive({
   time_visitante: '',
   gols_casa: 0,
   gols_visitante: 0,
-  data_jogo: new Date().toISOString()
+  data_jogo: new Date().toLocaleDateString('pt-BR')
 })
 
 const carregarTimesParaSelecao = async () => {
@@ -87,6 +87,10 @@ onMounted(carregarTimesParaSelecao)
               <input type="number" v-model.number="form.gols_visitante" class="form-control">
             </div>
           </div>
+            <div class="col-12 mb-3">
+              <label class="form-label">Data do jogo</label>
+              <input type="date" v-model="form.data_jogo" class="form-control">
+            </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-link link-secondary" @click="$emit('fechar')">Cancelar</button>

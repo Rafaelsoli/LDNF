@@ -108,8 +108,9 @@ def JogosCreate(api):
     
     
 def JogosDelete(api):
-    @api.delete("/jogo/{jogo_id}") # Note que usei "/jogo/" no singular para diferenciar
+    @api.delete("/jogo/{jogo_id}") 
     def delete_jogo(request, jogo_id: uuid.UUID):
         jogo = get_object_or_404(Jogos, id=jogo_id)
         jogo.delete()
         return {"success": True}
+    
