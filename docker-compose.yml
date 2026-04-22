@@ -1,0 +1,59 @@
+services:
+  db:
+    container_name: ldnf_banco
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ldnf_db
+    expose:
+      - 5432
+    networks:
+      - ldnf_network
+    volumes:
+      - db_data:/var/lib/postgresql
+  backend:
+    container_name: ldnf_back
+    image: brunorafael/meu-backend:latest
+    build: ./LDNF_backend
+    # volunes:
+    #   - sta
+    # expose:
+    #   - 8000
+    ports:
+      - "8000:8000"
+    networks:
+      - ldnf_network
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/ldnf_db
+    depends_on:
+      - db
+  frontend:
+    container_name: ldnf_front
+    image: brunorafael/meu-frontend:latest
+    build: ./LDNF-frontend
+    expose:
+      - 80
+    networks:
+      - ldnf_network
+    depends_on:
+      - backend
+  webservice:
+    container_name: ldnf_webservice
+    image: nginx:latest
+    ports:
+      - "55:55"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/proxy.conf
+      - ./staticfiles:/usr/share/nginx/html/static
+    depends_on:
+      - backend
+    networks:
+      - ldnf_network
+
+
+volumes:
+  db_data:
+
+networks:
+  ldnf_network:

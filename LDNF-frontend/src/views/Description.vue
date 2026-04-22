@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
-import { useTheme } from '@/components/useTheme'
 import { useRoute } from 'vue-router'
 import PlacarForm from '@/components/PlacarForm.vue' 
 import CombateForm from '@/components/CombateForm.vue'
+import HeaderComp from '@/components/HeaderComp.vue'
 
-const { theme, toggleTheme } = useTheme()
 const route = useRoute()
 
-const Usernome = ref("")
-const Useremail = ref("")
 const jogos = ref<any[]>([])
 const mostrarModal = ref(false)
 const mostrarModalCombate = ref(false)
@@ -45,16 +42,13 @@ const placarDesteTime = computed(() => {
 const carregarDados = async () => {
   const timeId = route.params.id
   try {
-    const [resTime, resUser, resPlacar, resCombates] = await Promise.all([
+    const [resTime, resPlacar, resCombates] = await Promise.all([
       axios.get(`/api/time/${timeId}`),
-      axios.get(`/api/eu/`),
       axios.get(`/api/placar/`),
       axios.get(`/api/jogos/${timeId}`)
     ])
     
     time.value = resTime.data
-    Usernome.value = resUser.data.nome
-    Useremail.value = resUser.data.email
     jogos.value = resPlacar.data
     combates.value = resCombates.data
   } catch (e) {
@@ -78,50 +72,31 @@ const excluirJogo = async (jogoId: string) => {
 </script>
 
 <template>
-  <header class="navbar navbar-expand-md d-print-none shadow-sm">
-    <div class="container-xl">
-      <a href="/Home" class="navbar-brand fw-bold text-primary me-3">🏆 LDNF</a>
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href="/Home">
-            <span class="nav-link-title">Home</span>
-          </a>
-        </li>
-      </ul>
-
-      <div class="navbar-nav flex-row order-md-last ms-auto">
-        <button @click="toggleTheme" class="btn me-2">
-          {{ theme === 'light' ? 'Escuro' : 'Claro' }}
-        </button>
-        <div class="nav-item dropdown">
-          <a href="#" class="nav-link d-flex align-items-center">
-            <span class="avatar avatar-sm me-2" style="background-image: url(/static/avatars/044m.jpg)"></span>
-            <div class="d-none d-xl-block">
-              <div class="fw-semibold">{{ Usernome }}</div>
-              <div class="small text-secondary">{{ Useremail }}</div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </header>
-
+  <header-comp></header-comp>
   <div class="page-body">
     <div class="container-xl">
-      <div v-if="time">
-        <div class="page-header mb-4">
-          <img v-if="time.escudo" :src="time.escudo" class="me-3" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #dee2e6;">
-          <h2 class="page-title">{{ time.nome }}</h2>
-          <div class="text-secondary"><i>{{ time.localidade }}</i></div>
-        </div>
+        <div v-if="time">
+          <div class="page-header mb-4">
+          <div class="d-flex align-items-center">
+            <img v-if="time.escudo" 
+                :src="time.escudo" 
+                class="me-3" 
+                style="width: 80px; height: 80px; object-fit: contain; background: transparent;">
 
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header"><h3 class="card-title">Sobre o {{ time.nome }}</h3></div>
-          <div class="card-body">
-            <p class="text-secondary lh-lg">{{ time.descricao }}</p>
+            <div>
+              <h2 class="page-title mb-0">{{ time.nome }}</h2>
+              <div class="text-secondary"><i>{{ time.localidade }}</i></div>
+            </div>
           </div>
-        </div>
+
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header"><h3 class="card-title">Sobre o {{ time.nome }}</h3></div>
+            <div class="card-body">
+              <p class="text-secondary lh-lg">{{ time.descricao }}</p>
+            </div>
+          </div>
       </div>
+    </div>
 
       <div v-if="time" class="mb-5">
         <h3 class="page-title mb-3">Jogadores do {{ time.nome }}</h3>
@@ -215,21 +190,38 @@ const excluirJogo = async (jogoId: string) => {
           style="font-size: 0.7rem; z-index: 10;"
         ></button>
         <div class="card-body p-3">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="text-center" :class="{'fw-bold': combate.gols_casa > combate.gols_visitante}">
-              {{ combate.time_casa.nome }}
-            </div>
-            <div class="h4 mb-0">
+        <div class="row align-items-center g-0">
+          
+          <div class="col d-flex align-items-center justify-content-end text-end" 
+              :class="{'fw-bold': combate.gols_casa > combate.gols_visitante}">
+            <span class="me-2 d-none d-md-inline">{{ combate.time_casa.nome }}</span>
+            <img :src="combate.time_casa.escudo" 
+                alt="Escudo Casa"
+                style="width: 32px; height: 32px; object-fit: contain;">
+          </div>
+
+          <div class="col-auto px-3">
+            <div class="bg-dark px-2 py-1 rounded border fw-bold h3 mb-0" style="min-width: 70px; text-align: center;">
               {{ combate.gols_casa }} - {{ combate.gols_visitante }}
             </div>
-            <div class="text-center" :class="{'fw-bold': combate.gols_visitante > combate.gols_casa}">
-              {{ combate.time_visitante.nome }}
-            </div>
           </div>
-          <div class="text-center mt-2 small text-secondary">
-            {{ new Date(combate.data_jogo).toLocaleDateString('pt-BR') }}
+
+          <div class="col d-flex align-items-center justify-content-start text-start" 
+              :class="{'fw-bold': combate.gols_visitante > combate.gols_casa}">
+            <img :src="combate.time_visitante.escudo" 
+                alt="Escudo Visitante"
+                class="me-2"
+                style="width: 32px; height: 32px; object-fit: contain;">
+            <span class="d-none d-md-inline">{{ combate.time_visitante.nome }}</span>
           </div>
+
         </div>
+
+        <div class="text-center mt-3 small text-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-inline me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M11 15h1" /><path d="M12 15v3" /></svg>
+          {{ new Date(combate.data_jogo).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) }}
+        </div>
+      </div>
       </div>
     </div>
 </div>

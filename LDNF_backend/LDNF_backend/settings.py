@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,6 +33,10 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'ldnf.Usuario'
 
+
+MEDIA_URL = '/avatar/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'avatar')
+    
 NINJA_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=180),
@@ -39,13 +44,22 @@ NINJA_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://localhost:80",
+    "http://127.0.0.1:80",
 ]
 
 CORS_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
+    "http://localhost:80",
+    "http://127.0.0.1:80",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True
+
+# 4. Se você estiver enviando JSON, o cabeçalho de Content-Type deve ser permitido
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "content-type",
 ]
 
 INSTALLED_APPS = [
@@ -104,8 +118,12 @@ WSGI_APPLICATION = 'LDNF_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ldnf_db',         
+        'USER': 'postgres',        
+        'PASSWORD': 'postgres',    
+        'HOST': 'db',       
+        'PORT': '5432',
     }
 }
 
@@ -145,6 +163,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

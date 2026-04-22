@@ -4,3 +4,4 @@ django-ninja-jwt
 django-cors-headers
 django-ninja-extra
 Pillow
+psycopg2-binary

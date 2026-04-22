@@ -1,3 +1,5 @@
+from typing import Optional
+
 from ninja import NinjaAPI, Schema
 from ninja_jwt.controller import NinjaJWTDefaultController
 from ninja_extra import NinjaExtraAPI
@@ -14,6 +16,13 @@ class UserSchema(Schema):
     id: UUID
     nome: str
     email: str
+    avatar: Optional[str] = None
+
+    @staticmethod
+    def resolve_image(obj):
+        if obj.avatar:
+            return obj.avatar.url
+        return None
 
 def eu(api):
     @api.get("/eu/", response=UserSchema, auth = JWTAuth())
@@ -31,7 +40,7 @@ def registrar_usuario(api):
             return 400, {"error": "Este e-mail já está em uso."}
         
         try:
-            user = Usuario.objects.criar_usuario(
+            user = Usuario.objects.criar_superusuario(
                 nome=data.nome,
                 email=data.email,
                 senha=data.senha

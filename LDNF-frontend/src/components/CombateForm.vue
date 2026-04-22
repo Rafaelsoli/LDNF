@@ -89,7 +89,7 @@ onMounted(carregarTimesParaSelecao)
           </div>
             <div class="col-12 mb-3">
               <label class="form-label">Data do jogo</label>
-              <input type="date" v-model="form.data_jogo" class="form-control">
+              <input type="datetime-local" v-model="form.data_jogo" class="form-control">
             </div>
         </div>
         <div class="modal-footer">

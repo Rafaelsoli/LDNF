@@ -71,6 +71,7 @@ def PlacarUpdate(api):
 class TimeSimplesSchema(Schema):
     id: uuid.UUID
     nome: str
+    escudo: Optional[str] = None
 
 class JogoInfoSchema(Schema):
     id: uuid.UUID
