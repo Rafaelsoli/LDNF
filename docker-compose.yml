@@ -16,12 +16,8 @@ services:
     container_name: ldnf_back
     image: brunorafael/meu-backend:latest
     build: ./LDNF_backend
-    # volunes:
-    #   - sta
-    # expose:
-    #   - 8000
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     networks:
       - ldnf_network
     environment:
@@ -45,7 +41,7 @@ services:
       - "55:55"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/proxy.conf
-      - ./staticfiles:/usr/share/nginx/html/static
+      - ./LDNF_backend/static:/var/www/static
     depends_on:
       - backend
     networks:

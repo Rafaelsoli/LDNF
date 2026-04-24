@@ -37,7 +37,7 @@
       </form>
 
       <div class="text-center text-secondary mt-3">
-        Ainda não tem conta? <router-link to="/registrar">Criar conta</router-link>
+        Ainda não tem conta? <router-link to="/">Criar conta</router-link>
       </div>
     </div>
   </div>

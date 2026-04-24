@@ -34,8 +34,6 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'ldnf.Usuario'
 
 
-MEDIA_URL = '/avatar/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'avatar')
     
 NINJA_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
@@ -46,16 +44,25 @@ NINJA_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:80",
     "http://127.0.0.1:80",
+    "http://localhost:55",
+    "http://127.0.0.1:55",
 ]
 
 CORS_TRUSTED_ORIGINS = [
     "http://localhost:80",
     "http://127.0.0.1:80",
+    "http://localhost:55",
+    "http://127.0.0.1:55",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True 
 CORS_ALLOW_CREDENTIALS = True
-
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:80",
+    "http://127.0.0.1:80",
+    "http://localhost:55",
+    "http://127.0.0.1:55",
+]
 # 4. Se você estiver enviando JSON, o cabeçalho de Content-Type deve ser permitido
 from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -162,7 +169,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
