@@ -10,7 +10,7 @@ from ninja import Router
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth import get_user_model
 from uuid import UUID
-
+from ninja_jwt.tokens import RefreshToken
 
 class UserSchema(Schema):
     id: UUID
@@ -46,5 +46,18 @@ def registrar_usuario(api):
                 senha=data.senha
             )
             return {"success": True, "user_id": str(user.id)}
+        except Exception as e:
+            return 500, {"error": f"Erro interno: {str(e)}"}
+
+class LogoutSchema(Schema):
+    refresh: str
+
+def logout_usuario(api):
+    @api.post("/logout/", auth=JWTAuth())
+    def logout_usuario(request, data: LogoutSchema):
+        try:
+            acesso = RefreshToken(data.refresh)
+            acesso.blacklist()
+            return {"success": True, "message": "Logout bem-sucedido."}
         except Exception as e:
             return 500, {"error": f"Erro interno: {str(e)}"}

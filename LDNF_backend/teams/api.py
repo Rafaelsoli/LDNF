@@ -92,6 +92,11 @@ def JogosInfo(api):
         return Jogos.objects.filter(
         models.Q(time_casa_id=time_id) | models.Q(time_visitante_id=time_id)
         ).select_related('time_casa', 'time_visitante')
+
+def JogosGeralInfo(api):
+    @api.get("/jogos/", response=List[JogoInfoSchema])
+    def get_jogos(request):
+        return Jogos.objects.all().select_related('time_casa', 'time_visitante')
     
 class JogoCreateSchema(Schema):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
