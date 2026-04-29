@@ -46,7 +46,10 @@ export const useUserStore = defineStore(`user`, {
             this.user.access = null
             this.user.refresh = null
             this.user.isAuthenticated = false
+            console.log('Removendo token e limpando dados do usuário')
             localStorage.clear()
+            delete axios.defaults.headers.common["Authorization"];
+            console.log('Token removido, dados do usuário limpos e cabeçalho de autorização excluído')
         },
 
         setUserInfo(user: any){
@@ -77,5 +80,10 @@ export const useUserStore = defineStore(`user`, {
                     this.removeToken()
                 })
         },
+
+        isLoggedIn(): boolean {
+            return this.user.isAuthenticated;
+        },
+        
     }
 })

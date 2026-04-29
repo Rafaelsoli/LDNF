@@ -201,7 +201,7 @@ const excluirJogo = async (jogoId: string) => {
           </div>
 
           <div class="col-auto px-3">
-            <div class="bg-dark px-2 py-1 rounded border fw-bold h3 mb-0" style="min-width: 70px; text-align: center;">
+            <div class="bg-body px-2 py-1 rounded border fw-bold h3 mb-0" style="min-width: 70px; text-align: center;">
               {{ combate.gols_casa }} - {{ combate.gols_visitante }}
             </div>
           </div>
