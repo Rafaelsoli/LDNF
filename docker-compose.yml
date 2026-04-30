@@ -18,10 +18,12 @@ services:
     build: ./LDNF_backend
     expose:
       - 8000
+    command: gunicorn --bind 0.0.0.0:8000 LDNF_backend.wsgi:application
     networks:
       - ldnf_network
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/ldnf_db
+      - DJANGO_SETTINGS_MODULE=LDNF_backend.settings
     depends_on:
       - db
   frontend:
