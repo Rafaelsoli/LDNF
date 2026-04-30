@@ -48,6 +48,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:80",
     "http://localhost:55",
     "http://127.0.0.1:55",
+    "http://homologacao.crc.pucminas.br"
 ]
 
 CORS_TRUSTED_ORIGINS = [
@@ -64,6 +65,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:80",
     "http://localhost:55",
     "http://127.0.0.1:55",
+    'http://homologacao.crc.pucminas.br'
 ]
 # 4. Se você estiver enviando JSON, o cabeçalho de Content-Type deve ser permitido
 from corsheaders.defaults import default_headers

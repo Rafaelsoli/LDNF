@@ -10,7 +10,7 @@ import axios from 'axios'
 import '@tabler/core/dist/css/tabler.min.css'
 import '@tabler/core/dist/js/tabler.min.js'
 
-axios.defaults.baseURL = "http://127.0.0.1:55"
+axios.defaults.baseURL = "http://homologacao.crc.pucminas.br"
 
 const app = createApp(App)
 app.use(createPinia())
