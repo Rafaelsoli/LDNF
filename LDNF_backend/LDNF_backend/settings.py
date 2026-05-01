@@ -28,7 +28,13 @@ SECRET_KEY = 'django-insecure-*^cfz^$5!)gn4na76sk!rezf7o)aw-hwdcbsa0)b^gg@%iv0nb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'homologacao.crc.pucminas.br', 
+    '93.92.112.18', 
+    'localhost', 
+    '127.0.0.1',
+    'backend'
+]
 
 
 # Application definition
@@ -67,7 +73,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:55",
     'http://homologacao.crc.pucminas.br'
 ]
-# 4. Se você estiver enviando JSON, o cabeçalho de Content-Type deve ser permitido
+
 from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "content-type",
