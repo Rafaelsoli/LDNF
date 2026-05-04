@@ -38,6 +38,17 @@ const placarDesteTime = computed(() => {
     return String(idNoPlacar) === String(idDaUrl)
   })
 })
+const isLoggedIn = ref(false)
+
+onMounted(async() => {
+  try {
+    const {data} = await axios.get(`/api/eu/`)
+    isLoggedIn.value = !!data
+  } catch (error) {
+    console.error("Convidado", error)
+    isLoggedIn.value = false
+  }
+})
 
 const carregarDados = async () => {
   const timeId = route.params.id
@@ -117,7 +128,7 @@ const excluirJogo = async (jogoId: string) => {
       <div v-if="time && placarDesteTime" class="mt-5">
         <div class="page-header mb-4 d-flex justify-content-between align-items-center">
           <h3 class="page-title p-3">Placar atual do {{ time.nome }}</h3>
-          <button class="btn btn-primary" @click="mostrarModal = true">
+          <button v-if="isLoggedIn" class="btn btn-primary" @click="mostrarModal = true">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon me-2"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg>
             Atualizar Placar  
           </button>
@@ -166,7 +177,7 @@ const excluirJogo = async (jogoId: string) => {
 <div v-if="time" class="container-xl mt-5">
   <div class="page-header mb-4 d-flex justify-content-between align-items-center">
     <h3 class="page-title p-3">Jogos do {{ time.nome }}</h3>
-    <button class="btn btn-outline-primary" @click="mostrarModalCombate = true">
+    <button v-if="isLoggedIn" class="btn btn-outline-primary" @click="mostrarModalCombate = true">
       <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
       Novo Jogo
     </button>
@@ -183,7 +194,7 @@ const excluirJogo = async (jogoId: string) => {
           'border-warning': combate.gols_casa === combate.gols_visitante
         }"
       >
-        <button 
+        <button v-if="isLoggedIn"
           @click="excluirJogo(combate.id)" 
           class="btn-close position-absolute top-0 end-0 m-2" 
           aria-label="Excluir jogo"
