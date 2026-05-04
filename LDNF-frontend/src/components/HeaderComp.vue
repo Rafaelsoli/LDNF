@@ -51,7 +51,7 @@ async function login() {
     <header class="navbar navbar-expand-md d-print-none shadow-sm">
     <div class="container-xl">
       
-      <a href="/Home" class="navbar-brand fw-bold text-primary me-3">
+      <a href="/" class="navbar-brand fw-bold text-primary me-3">
         🏆 LDNF
       </a>
       <!-- USER -->

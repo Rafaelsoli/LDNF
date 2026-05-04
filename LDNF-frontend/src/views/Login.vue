@@ -37,7 +37,7 @@
       </form>
 
       <div class="text-center text-secondary mt-3">
-        Ainda não tem conta? <router-link to="/">Criar conta</router-link>
+        Ainda não tem conta? <router-link to="/registro">Criar conta</router-link>
       </div>
     </div>
   </div>
@@ -78,7 +78,7 @@ const submitForm = async () => {
             const RespostaUsuario = await axios.get('/api/eu/')
             userStore.setUserInfo(RespostaUsuario.data)
             console.log("user: ", RespostaUsuario.data)
-            router.push('/Home')
+            router.push('/')
         }
     } catch (error: any) {
         console.error("Erro no login:", error)
